@@ -31,6 +31,7 @@ class Ticket(models.Model):
         ('IN PROGRESS', 'IN PROGRESS'),
         ('WAITING', 'WAITING'),
         ('DONE', 'DONE'),
+        ('CLOSED', 'CLOSED')
     ]
     status = models.CharField(
         'Status',
