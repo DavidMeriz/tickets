@@ -1,19 +1,21 @@
 from django.db import models
 from django.contrib.auth.models import User
+from django.utils import timezone
+from django.conf import settings
+import os
 
-
+# Sobrescribe __unicode__ para el modelo User (opcional, útil en Django 1.x)
 def user_unicode(self):
     """
     Return 'last_name, first_name' for User by default
     """
     return f'{self.last_name}, {self.first_name}'
 
-User.__unicode__ = user_unicode
+User.__unicode__ = user_unicode  # Solo útil si usas Python 2/Django 1.x
 
 # Ticket model
-title_max_length = 255
 class Ticket(models.Model):
-    title = models.CharField('Title', max_length=title_max_length)
+    title = models.CharField('Title', max_length=255)
 
     owner = models.ForeignKey(
         User,
@@ -31,12 +33,12 @@ class Ticket(models.Model):
         ('IN PROGRESS', 'IN PROGRESS'),
         ('WAITING', 'WAITING'),
         ('DONE', 'DONE'),
-        
     ]
+
     status = models.CharField(
         'Status',
         choices=STATUS_CHOICES,
-        max_length=title_max_length,
+        max_length=255,
         blank=True,
         null=True,
     )
@@ -67,12 +69,8 @@ class Ticket(models.Model):
     def __str__(self):
         return self.title
 
-# FollowUp model
-try:
-    from django.utils import timezone
-except ImportError:
-    from datetime import datetime as timezone
 
+# FollowUp model
 class FollowUp(models.Model):
     """
     A FollowUp is a comment to a ticket.
@@ -88,24 +86,21 @@ class FollowUp(models.Model):
     class Meta:
         ordering = ['-modified']
 
-# Attachment helper path
+
+# Helper for attachment file path
 def attachment_path(instance, filename):
     """
     Provide a path tickets/<ticket_id>/<filename> inside MEDIA_ROOT.
     Ensures the directory exists with proper permissions.
     """
-    import os
-    from django.conf import settings
-
-    # Build relative and absolute paths
     relative_dir = f'tickets/{instance.ticket.id}'
     absolute_dir = os.path.join(settings.MEDIA_ROOT, relative_dir)
 
-    # Ensure the directory exists (0o777 permissions)
+    # Ensure the directory exists
     os.makedirs(absolute_dir, 0o777, exist_ok=True)
 
-    # Return the relative path for FileField
     return os.path.join(relative_dir, filename)
+
 
 # Attachment model
 class Attachment(models.Model):
@@ -118,4 +113,3 @@ class Attachment(models.Model):
     class Meta:
         verbose_name = 'Attachment'
         verbose_name_plural = 'Attachments'
-
