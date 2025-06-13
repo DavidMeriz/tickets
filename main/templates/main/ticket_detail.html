@@ -1,0 +1,132 @@
+{% extends "main/base.html" %}
+
+{% block header_icon %}<i class="fa fa-pencil-square-o fa-5x"></i>{% endblock %}
+
+{# Cabecera grande #}
+{% block headline %}Ticket #{{ ticket.id }}{% endblock %}
+{% block head-message %}Toda la información sobre este ticket{% endblock %}
+
+{# <title> del navegador #}
+{% block title %}Tickets Detalles del ticket #{{ ticket.id }}{% endblock %}
+
+{% block content %}
+
+<div class="dropdown" style="float:right;margin-top:-50px;margin-right:20px;">
+    <button class="btn btn-default dropdown-toggle" type="button" id="acciones" data-toggle="dropdown" aria-expanded="true">
+        Acciones <span class="caret"></span>
+    </button>
+    <ul class="dropdown-menu" role="menu" aria-labelledby="acciones">
+        <li role="presentation">
+            <a role="menuitem" tabindex="-1" href="{% url 'ticket_edit' pk=ticket.id %}" id="editar_ticket">Editar ticket</a>
+        </li>
+        <li role="presentation">
+            <a role="menuitem" tabindex="-1" href="{% url 'attachment_new' %}?ticket={{ ticket.id }}" id="add_attachment">Añadir adjunto</a>
+        </li>
+        <li role="presentation">
+            <a role="menuitem" tabindex="-1" href="{% url 'followup_new' %}?ticket={{ ticket.id }}" id="add_followup">Añadir seguimiento</a>
+        </li>
+    </ul>
+</div>
+
+<div class="page-header"><h1>Ticket #{{ ticket.id }}</h1></div>
+
+<div class="row">
+    <div class="col-lg-8">
+
+        <style>.description { background:#EEE; }</style>
+
+        <table class="table table-bordered">
+            <tr>
+                <td class="description"><b>Estado</b></td>
+                <td>
+                    {% if ticket.status == "TODO" %}
+                        <span class="label label-danger">PENDIENTE</span>
+                    {% elif ticket.status == "DONE" %}
+                        <span class="label label-success">FINALIZADO</span>
+                    {% elif ticket.status == "WAITING" %}
+                        <span class="label label-warning">EN&nbsp;ESPERA</span>
+                    {% elif ticket.status == "IN PROGRESS" %}
+                        <span class="label label-default">EN&nbsp;PROCESO</span>
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="description"><b>Asignado a</b></td>
+                <td>
+                    {% if ticket.assigned_to %}
+                        {{ ticket.assigned_to.first_name }} {{ ticket.assigned_to.last_name }}
+                    {% else %}
+                        ———
+                    {% endif %}
+                </td>
+            </tr>
+            <tr>
+                <td class="description"><b>Propietario</b></td>
+                <td>{{ ticket.owner.first_name }} {{ ticket.owner.last_name }}</td>
+            </tr>
+            <tr>
+                <td width="180px" class="description"><b>Título</b></td>
+                <td>{{ ticket.title }}</td>
+            </tr>
+            <tr>
+                <td class="description"><b>Descripción</b></td>
+                <td>{{ ticket.description }}</td>
+            </tr>
+        </table>
+
+    </div>
+
+    <div class="col-lg-4">
+        {% if attachments %}
+            <h2>Adjuntos</h2>
+            <ul>
+                {% for attachment in attachments %}
+                    <li>
+                        <a href="/media/tickets/{{ ticket.id }}/{{ attachment.filename }}">{{ attachment.filename }}</a>
+                    </li>
+                {% endfor %}
+            </ul>
+        {% endif %}
+    </div>
+</div>
+
+<link rel="stylesheet" href="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/bootstrap/3/dataTables.bootstrap.css">
+<script src="//cdn.datatables.net/1.10.4/js/jquery.dataTables.min.js"></script>
+<script src="//cdn.datatables.net/plug-ins/9dcbecd42ad/integration/bootstrap/3/dataTables.bootstrap.js"></script>
+<script>
+    $(function () { $('#followups').dataTable(); });
+</script>
+
+<h2>Seguimientos</h2>
+{% if followups %}
+<table id="followups" class="table table-striped table-bordered" width="100%">
+    <thead>
+        <tr>
+            <th width="10px"></th>
+            <th width="150px">Usuario</th>
+            <th>Texto</th>
+            <th width="100px">Modificado</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for followup in followups %}
+            <tr>
+                <td>
+                    <a href="{% url 'followup_edit' pk=followup.id %}">
+                        <i class="fa fa-pencil-square-o"></i>
+                    </a>
+                </td>
+                <td>{{ followup.user.first_name }} {{ followup.user.last_name }}</td>
+                <td>{{ followup.text }}</td>
+                <td>{{ followup.modified|date:"d.m.Y, G:i" }}</td>
+            </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+    <p>Sin seguimientos aún…</p>
+{% endif %}
+
+{% endblock %}
+
+

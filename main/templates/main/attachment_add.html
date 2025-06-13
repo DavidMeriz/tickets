@@ -1,0 +1,21 @@
+{% extends "main/base.html" %}
+
+{% block title %}Tickets - Añadir adjunto{% endblock %}
+
+{% block header_icon %}<i class="fa fa-paperclip fa-5x"></i>{% endblock %}
+{% block headline %}Añadir adjunto{% endblock %}
+{% block head-message %}Por favor, completa el formulario{% endblock %}
+
+{% block content %}
+    {% load crispy_forms_tags %}
+
+    <div class="page-header"><h1>Añadir adjunto</h1></div>
+
+    <form enctype="multipart/form-data" method="post" action="">
+        {% csrf_token %}
+        {{ form | crispy }}
+        <input class="btn btn-primary" type="submit" value="Guardar adjunto" />
+    </form>
+{% endblock %}
+
+

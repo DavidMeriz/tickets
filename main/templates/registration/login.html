@@ -1,0 +1,132 @@
+{% load static %}
+
+<!DOCTYPE html>
+<html lang="es">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Sistema informático para la gestión de incidencias tecnológicas – CACME">
+    <link rel="shortcut icon" href="{% static 'img/favicon.ico' %}">
+    <title>Bienvenido</title>
+
+    <!-- Bootstrap principal -->
+    <link href="{% static 'bootstrap/css/bootstrap.css' %}" rel="stylesheet">
+    <!-- Estilos propios -->
+    <link href="{% static 'css/frontpage.css' %}" rel="stylesheet">
+
+    <!--[if lt IE 9]>
+      <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
+      <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <![endif]-->
+  </head>
+
+  <body>
+    <!-- Barra de navegación -->
+    <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
+      <div class="container">
+        <div class="navbar-header"></div>
+        <div class="collapse navbar-collapse">
+          <ul class="nav navbar-nav"></ul>
+          <ul class="nav navbar-nav navbar-right">
+            <li>
+              <a href="#" data-toggle="modal" data-target="#LoginModal" title="Iniciar sesión">Iniciar sesión</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </nav>
+
+    <!-- Cabecera -->
+    <div class="jumbotron jumbotron-carousel corporate-jumbo">
+      <div class="container">
+        <div class="row">
+          <div class="col-md-8 col-sm-12">
+            <h1 style="color:#fff">Bienvenido</h1>          
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mensaje de bienvenida centrado -->
+<div class="row" style="height:260px;">
+  <div class="col-xs-12 text-center"
+       style="
+         display:flex;
+         flex-direction:column;
+         justify-content:center;
+         align-items:center;
+         height:100%;
+         color:#8f0a0a;
+         text-shadow:0 1px 3px rgba(0,0,0,.6);
+       ">
+    <h1 style="font-size:64px; font-weight:700; margin:0;">
+      Gestión&nbsp;de&nbsp;Incidencias
+    </h1>
+    <p style="font-size:24px; margin-top:10px;">
+      Sistema interno de tickets de la<br>
+      <strong>Cooperativa&nbsp;de&nbsp;Ahorro&nbsp;y&nbsp;Crédito&nbsp;Migrantes&nbsp;del&nbsp;Ecuador</strong>
+    </p>
+  </div>
+</div>
+
+
+    <!-- Modales -->
+    <div class="modal fade" id="LoginModal" tabindex="-1" aria-labelledby="LoginModalLabel" aria-hidden="true">
+      <div class="modal-dialog" style="width:450px;">
+        <div class="modal-content">
+          <div class="modal-header">
+            <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">&times;</span><span class="sr-only">Cerrar</span></button>
+            <h4 class="modal-title" id="LoginModalLabel">Iniciar sesión</h4>
+          </div>
+          <div class="modal-body">
+            <form class="form-signin" method="post" action="{% url 'login' %}">
+              {% csrf_token %}
+              <label for="username" class="sr-only">Usuario</label>
+              <input type="text" id="username" name="username" class="form-control" placeholder="Usuario" required autofocus>
+              <label for="password" class="sr-only">Contraseña</label>
+              <input type="password" id="password" name="password" class="form-control" placeholder="Contraseña" required>
+              <button class="btn btn-lg btn-primary btn-block" type="submit">Entrar</button>
+              <input type="hidden" name="next" value="{{ next }}" />
+            </form>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div class="modal fade" id="ErrorModal" tabindex="-1" aria-labelledby="ErrorModalLabel" aria-hidden="true">
+      <div class="modal-dialog" style="width:450px;">
+        <div class="modal-content">
+          <div class="modal-body">
+            <div class="alert alert-danger" role="alert" style="background:#f1f1f1;">
+              <i class="fa fa-frown-o" style="float:right;color:red;padding:10px;margin-left:10px;font-size:80px;"></i>
+              <b>¡Vaya!</b><br>
+              Credenciales incorrectas. <a href="#" data-toggle="modal" data-target="#LoginModal" id="LinkLogin">Intenta de nuevo</a>.
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- JavaScript -->
+    <script src="https://code.jquery.com/jquery-1.10.2.min.js"></script>
+    <script src="{% static 'bootstrap/js/bootstrap.min.js' %}"></script>
+
+    {% if form.errors %}
+    <script>
+      $('#ErrorModal').modal();
+      $('#LinkLogin').click(function(){
+        $('#ErrorModal').modal('hide');
+        $('#LoginModal').modal('show');
+        return false;
+      });
+    </script>
+    {% endif %}
+
+    <script>
+      $('.modal').on('shown.bs.modal', function(){
+        $(this).find('[autofocus]').focus();
+      });
+    </script>
+  </body>
+</html>

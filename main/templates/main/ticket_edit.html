@@ -1,0 +1,45 @@
+{% extends "main/base.html" %}
+
+{% block header_icon %}<i class="fa fa-pencil-square-o fa-5x"></i>{% endblock %}
+
+{# Título grande de la cabecera #}
+{% block headline %}
+    {% if 'edit' in request.path %}
+        Editar ticket
+    {% else %}
+        Crear nuevo ticket
+    {% endif %}
+{% endblock %}
+
+{% block head-message %}Por favor, complete el formulario{% endblock %}
+
+{# Etiqueta <title> del navegador #}
+{% block title %}
+    {% if 'edit' in request.path %}
+        Tickets  Editar ticket
+    {% else %}
+        Tickets  Crear nuevo ticket
+    {% endif %}
+{% endblock %}
+
+{% block content %}
+    {% load crispy_forms_tags %}
+
+    {% if 'edit' in request.path %}
+        <div class="page-header"><h1>Editar ticket</h1></div>
+
+        <form action="#" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input class="btn btn-primary" type="submit" value="Guardar ticket">
+        </form>
+    {% else %}
+        <div class="page-header"><h1>Crear un nuevo ticket</h1></div>
+
+        <form action="/ticket/new/" method="post">
+            {% csrf_token %}
+            {{ form|crispy }}
+            <input class="btn btn-primary" type="submit" value="Crear ticket">
+        </form>
+    {% endif %}
+{% endblock %}
