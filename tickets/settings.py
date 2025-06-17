@@ -99,8 +99,8 @@ DATABASES = {
 # ---------------------------------------------------------------------------
 #  Internacionalización
 # ---------------------------------------------------------------------------
-LANGUAGE_CODE = 'es'
-TIME_ZONE     = 'Europe/Madrid'
+LANGUAGE_CODE = 'es-ec'
+TIME_ZONE     = 'America/Guayaquil'
 USE_I18N      = True
 USE_L10N      = True
 USE_TZ        = True

@@ -1,13 +1,20 @@
 {% extends "main/base.html" %}
 
-{% block header_icon %}<i class="fa fa-pencil-square-o fa-5x"></i>{% endblock %}
+{% block header_icon %}
+    <i class="fa fa-pencil-square-o fa-5x"></i>
+{% endblock %}
 
-{# Cabecera grande #}
-{% block headline %}Ticket #{{ ticket.id }}{% endblock %}
-{% block head-message %}Toda la información sobre este ticket{% endblock %}
+{% block headline %}
+    Ticket #{{ ticket.id }}
+{% endblock %}
 
-{# <title> del navegador #}
-{% block title %}Tickets Detalles del ticket #{{ ticket.id }}{% endblock %}
+{% block head-message %}
+    Toda la información sobre este ticket
+{% endblock %}
+
+{% block title %}
+    Tickets Detalles del ticket #{{ ticket.id }}
+{% endblock %}
 
 {% block content %}
 
@@ -54,7 +61,7 @@
                 <td class="description"><b>Asignado a</b></td>
                 <td>
                     {% if ticket.assigned_to %}
-                        {{ ticket.assigned_to.first_name }} {{ ticket.assigned_to.last_name }}
+                        {{ ticket.assigned_to.get_full_name|default:ticket.assigned_to.username }}
                     {% else %}
                         ———
                     {% endif %}
@@ -62,7 +69,13 @@
             </tr>
             <tr>
                 <td class="description"><b>Propietario</b></td>
-                <td>{{ ticket.owner.first_name }} {{ ticket.owner.last_name }}</td>
+                <td>
+                    {% if ticket.owner %}
+                        {{ ticket.owner.get_full_name|default:ticket.owner.username }}
+                    {% else %}
+                        ———
+                    {% endif %}
+                </td>
             </tr>
             <tr>
                 <td width="180px" class="description"><b>Título</b></td>
@@ -116,7 +129,13 @@
                         <i class="fa fa-pencil-square-o"></i>
                     </a>
                 </td>
-                <td>{{ followup.user.first_name }} {{ followup.user.last_name }}</td>
+                <td>
+                    {% if followup.user %}
+                        {{ followup.user.get_full_name|default:followup.user.username }}
+                    {% else %}
+                        ———
+                    {% endif %}
+                </td>
                 <td>{{ followup.text }}</td>
                 <td>{{ followup.modified|date:"d.m.Y, G:i" }}</td>
             </tr>
@@ -128,5 +147,3 @@
 {% endif %}
 
 {% endblock %}
-
-

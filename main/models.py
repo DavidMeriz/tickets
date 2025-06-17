@@ -6,16 +6,14 @@ import os
 
 
 def user_unicode(self):
-    """
-    Return 'last_name, first_name' for User by default
-    """
+
     return f'{self.last_name}, {self.first_name}'
 
 User.__unicode__ = user_unicode 
 
-# Ticket model
+# Ticket model 
 class Ticket(models.Model):
-    title = models.CharField('Title', max_length=255)
+    title = models.CharField('Título', max_length=255)
 
     owner = models.ForeignKey(
         User,
@@ -23,20 +21,20 @@ class Ticket(models.Model):
         related_name='owner',
         blank=True,
         null=True,
-        verbose_name='Owner'
+        verbose_name='Propietario'
     )
 
-    description = models.TextField('Description', blank=True, null=True)
+    description = models.TextField('Descripción', blank=True, null=True)
 
     STATUS_CHOICES = [
-        ('TODO', 'TODO'),
-        ('IN PROGRESS', 'IN PROGRESS'),
-        ('WAITING', 'WAITING'),
-        ('DONE', 'DONE'),
+            
+        ('IN PROGRESS', 'EN PROGRESO'),
+        ('WAITING', 'EN ESPERA'),
+        ('DONE', 'FINALIZADO'),
     ]
 
     status = models.CharField(
-        'Status',
+        'Estado',
         choices=STATUS_CHOICES,
         max_length=255,
         blank=True,
@@ -49,7 +47,7 @@ class Ticket(models.Model):
         related_name='waiting_for',
         blank=True,
         null=True,
-        verbose_name='Waiting For'
+        verbose_name='Ayudante'
     )
 
     closed_date = models.DateTimeField(blank=True, null=True)
@@ -60,7 +58,7 @@ class Ticket(models.Model):
         related_name='assigned_to',
         blank=True,
         null=True,
-        verbose_name='Assigned to'
+        verbose_name='Asignado a'
     )
 
     created = models.DateTimeField(auto_now_add=True)
@@ -70,16 +68,16 @@ class Ticket(models.Model):
         return self.title
 
 
-# FollowUp model
+# FollowUp model o Seguimiento de Ticket
 class FollowUp(models.Model):
     """
     A FollowUp is a comment to a ticket.
     """
     ticket = models.ForeignKey(Ticket, verbose_name='Ticket', on_delete=models.CASCADE)
-    date = models.DateTimeField('Date', default=timezone.now)
-    title = models.CharField('Title', max_length=200)
-    text = models.TextField('Text', blank=True, null=True)
-    user = models.ForeignKey(User, blank=True, null=True, verbose_name='User', on_delete=models.SET_NULL)
+    date = models.DateTimeField('Fecha', default=timezone.now)
+    title = models.CharField('Titulo', max_length=200)
+    text = models.TextField('Texto', blank=True, null=True)
+    user = models.ForeignKey(User, blank=True, null=True, verbose_name='Usuario', on_delete=models.SET_NULL)
     created = models.DateTimeField(auto_now_add=True)
     modified = models.DateTimeField(auto_now=True)
 
@@ -87,12 +85,9 @@ class FollowUp(models.Model):
         ordering = ['-modified']
 
 
-# Helper for attachment file path
+# Helper for attachment file path o archivo adjunto
 def attachment_path(instance, filename):
-    """
-    Provide a path tickets/<ticket_id>/<filename> inside MEDIA_ROOT.
-    Ensures the directory exists with proper permissions.
-    """
+
     relative_dir = f'tickets/{instance.ticket.id}'
     absolute_dir = os.path.join(settings.MEDIA_ROOT, relative_dir)
 
@@ -101,15 +96,15 @@ def attachment_path(instance, filename):
 
     return os.path.join(relative_dir, filename)
 
-
-# Attachment model
+ 
+# Attachment model o Adjunto de Ticket
 class Attachment(models.Model):
     ticket = models.ForeignKey(Ticket, verbose_name='Ticket', on_delete=models.CASCADE)
     file = models.FileField('File', upload_to=attachment_path, max_length=1000)
     filename = models.CharField('Filename', max_length=1000)
-    user = models.ForeignKey(User, blank=True, null=True, verbose_name='User', on_delete=models.SET_NULL)
+    user = models.ForeignKey(User, blank=True, null=True, verbose_name='Usuario', on_delete=models.SET_NULL)
     created = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        verbose_name = 'Attachment'
-        verbose_name_plural = 'Attachments'
+        verbose_name = 'Adjunto'
+        verbose_name_plural = 'Adjuntos'
