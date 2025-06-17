@@ -4,14 +4,14 @@ from django.utils import timezone
 from django.conf import settings
 import os
 
-# Sobrescribe __unicode__ para el modelo User (opcional, útil en Django 1.x)
+
 def user_unicode(self):
     """
     Return 'last_name, first_name' for User by default
     """
     return f'{self.last_name}, {self.first_name}'
 
-User.__unicode__ = user_unicode  # Solo útil si usas Python 2/Django 1.x
+User.__unicode__ = user_unicode 
 
 # Ticket model
 class Ticket(models.Model):
