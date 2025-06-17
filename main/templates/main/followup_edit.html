@@ -1,0 +1,45 @@
+{% extends "main/base.html" %}
+
+{# <title> de la pestaña #}
+{% block title %}
+    {% if 'edit' in request.path %}
+        Tickets - Editar seguimiento
+    {% else %}
+        Tickets - Nuevo seguimiento
+    {% endif %}
+{% endblock %}
+
+{# Encabezado grande del jumbotron #}
+{% block header_icon %}<i class="fa fa-pencil-square-o fa-5x"></i>{% endblock %}
+{% block headline %}
+    {% if 'edit' in request.path %}
+        Editar seguimiento
+    {% else %}
+        Crear nuevo seguimiento
+    {% endif %}
+{% endblock %}
+{% block head-message %}Por favor rellene el formulario{% endblock %}
+
+{% block content %}
+    {% load crispy_forms_tags %}
+
+    {% if 'edit' in request.path %}
+        <div class="page-header"><h1>Editar seguimiento</h1></div>
+
+        <form method="post">
+            {% csrf_token %}
+            {{ form | crispy }}
+            <input type="submit" class="btn btn-primary" value="Guardar seguimiento">
+        </form>
+    {% else %}
+        <div class="page-header"><h1>Crear un nuevo seguimiento</h1></div>
+
+        <form action="/followup/new/" method="post">
+            {% csrf_token %}
+            {{ form | crispy }}
+            <input type="submit" class="btn btn-primary" value="Crear seguimiento">
+        </form>
+    {% endif %}
+{% endblock %}
+
+
